@@ -1,0 +1,13 @@
+little web application to track your (household) expenses
+
+INSTALLATION
+
+- install CPAN modules: Plack, Template, DBIx::Class::Candy - and some more :)
+- create a database "ausgaben" and an user "ausgaben" with password "ausgaben"
+  (or change lib/Ausgaben/Web.pm)
+- mysql -uausgaben -pausgaben ausgaben < sql/schema.sql
+
+RUN
+
+- plackup
+- in browser: http://localhost:5000
