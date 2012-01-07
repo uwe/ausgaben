@@ -209,7 +209,7 @@ sub process {
     my $ende       = $today->clone->add(months => 1)->subtract(days => 1);
     my $buchung_rs = $api->rs('Buchung')
         ->search({datum    => {-between => [$start->ymd, $ende->ymd]}},
-                 {order_by => 'datum, reihenfolge'},
+                 {order_by => 'datum DESC, reihenfolge'},
                 );
 
     my $kontostand = $api->konto_anfangsbestand(
