@@ -1,0 +1,157 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+[% USE Fix2 %]
+[% USE Nbsp %]
+[% BLOCK show_buchung %]
+[%   # Betraege-Hash erstellen %]
+[%   SET betrag = {} %]
+[%   FOREACH bet = b.betraege %]
+[%     betrag.${bet.konto_id} = bet.betrag %]
+[%   END %]
+          <tr class="[% UNLESS b.ignorieren %][% b.verteilung.name %][% END %]">
+            <td>
+              <a href="?edit=[% b.id %]">[% b.datum.dmy('.') | html %]</a>
+              <a href="?up=[% b.id %]">+</a>
+              <a href="?down=[% b.id %]">-</a>
+            </td>
+[%   FOREACH k = KONTO %]
+[%     NEXT UNLESS k.anzeigen %]
+            <td align="right">[% IF betrag.${k.id} %][% betrag.${k.id} | fix2 %][% ELSE %]&nbsp;[% END %]</td>
+[%   END %]
+            <td>[% b.haendler.name   | html | nbsp %]</td>
+            <td>[% b.kategorie.name  | html | nbsp %]</td>
+            <td>[% b.verteilung.name | html | nbsp %]</td>
+            <td>[% IF b.ignorieren %]X[% ELSE %]&nbsp;[% END %]</td>
+            <td>[% b.bemerkung       | html | nbsp %]</td>
+          </tr>
+[% END %]
+[% BLOCK edit_buchung %]
+          <tr>
+            <td[% IF ERROR.datum %] class="error"[% END %]><input type="text" name="datum" value="[% DATA.datum | html %]" size="10"></td>
+[% FOREACH k = KONTO %]
+[%   NEXT UNLESS k.anzeigen %]
+[%   SET name = 'konto_' _ k.id %]
+            <td[% IF ERROR.konto OR ERROR.$name %] class="error"[% END %]><input type="text" name="[% name %]" value="[% DATA.$name | html %]" size="10"></td>
+[% END %]
+            <td>
+[% IF DATA.haendler_name OR (DATA.haendler_id == -1) %]
+              <input type="hidden" name="haendler_id" value="-1">
+              <input type="text" name="haendler_name" value="[% DATA.haendler_name | html %]" size="20">
+[% ELSE %]
+              <select name="haendler_id">
+                <option value="">...</option>
+                <option value="-1">(neu)</option>
+[%   FOREACH h = HAENDLER %]
+                <option value="[% h.id | html %]"[% IF h.id == DATA.haendler_id %] selected[% END %]>[% h.name | html %]</option>
+[%   END %]
+              </select>
+[% END %]
+            </td>
+            <td>
+[% IF DATA.kategorie_name OR (DATA.kategorie_id == -1) %]
+              <input type="hidden" name="kategorie_id" value="-1">
+              <input type="text" name="kategorie_name" value="[% DATA.kategorie_name | html %]" size="20">
+[% ELSE %]
+              <select name="kategorie_id">
+                <option value="">...</option>
+                <option value="-1">(neu)</option>
+[%   FOREACH k = KATEGORIE %]
+                <option value="[% k.id | html %]"[% IF k.id == DATA.kategorie_id %] selected[% END %]>[% k.name | html %]</option>
+[%   END %]
+              </select>
+[% END %]
+            </td>
+            <td>
+              <select name="verteilung_id">
+[% FOREACH v = VERTEILUNG %]
+                <option value="[% v.id | html %]"[% IF v.id == DATA.verteilung_id %] selected[% END %]>[% v.name | html %]</option>
+[% END %]
+              </select>
+            </td>
+            <td>
+              <input type="checkbox" name="ignorieren" value="1"[% IF DATA.ignorieren %] checked[% END %]>
+            </td>
+            <td>
+              <input type="text" name="bemerkung" value="[% DATA.bemerkung | html %]" size="20">
+              <input type="hidden" name="id" value="[% DATA.id | html %]">
+              <input type="submit" value="go">
+            </td>
+          </tr>
+[% END %]
+<html>
+  <head>
+    <title>Ausgaben</title>
+    <style>
+.error { background-color:red }
+<!--
+tr.U  { background-color:#F2F5A9 }
+tr.P  { background-color:#F5A9A9 }
+tr.PU { background-color:#CEF6CE }
+-->
+    </style>
+  </head>
+
+  <body>
+
+    <table border="1" cellpadding="2" cellspacing="0">
+      <tbody>
+        <tr>
+          <th>Monat</th>
+[% FOREACH m = MONAT %]
+          <td><a href="?monat=[% m.datum.strftime("%Y-%m") %]">[% m.datum.strftime("%m/%y") | html %]</a></td>
+[% END %]
+        </tr>
+        <tr>
+          <th>Ausgaben</th>
+[% FOREACH m = MONAT %]
+          <td>[% m.ausgaben | fix2 %]</td>
+[% END %]
+        </tr>
+[% FOREACH p = PERSON %]
+        <tr>
+          <th>[% p.name | html %]</th>
+[% FOREACH m = MONAT %]
+          <td>[% m.anteil.${p.id} | fix2 %] ([% (m.anteil.${p.id} - m.person.${p.id}) | fix2 %])</td>
+[% END %]
+        </tr>
+[% END %]
+      </tbody>
+    </table>
+
+    <hr>
+
+    <form action="/" method="post">
+      <table border="1" cellpadding="4" cellspacing="0">
+        <thead>
+          <tr>
+            <th>Datum</th>
+[% FOREACH k = KONTO %]
+[%   NEXT UNLESS k.anzeigen %]
+            <th>[% k.name | html %]<br>[% KONTOSTAND.${k.id} | fix2 %]</th>
+[% END %]
+            <th>H&auml;ndler</th>
+            <th>Kategorie</th>
+            <th>Vert.</th>
+            <th>Ign.</th>
+            <th>Bemerkung</th>
+          </tr>
+        </thead>
+
+        <tbody>
+[% FOREACH b = BUCHUNG %]
+[%   IF b.id == edit_id %]
+[%     PROCESS edit_buchung %]
+[%   ELSE %]
+[%     PROCESS show_buchung %]
+[%   END %]
+[% END %]
+        </tbody>
+
+[% UNLESS edit_id %]
+        <tfoot>
+[%   PROCESS edit_buchung %]
+        </tfoot>
+[% END %]
+      </table>
+    </form>
+  </body>
+</html>

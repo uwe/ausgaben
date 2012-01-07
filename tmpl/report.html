@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+[% USE Fix2 %]
+<html>
+  <head>
+    <title>Ausgaben</title>
+  </head>
+
+  <body>
+
+    <table border="1" cellpadding="4" cellspacing="0">
+      <thead>
+        <tr>
+          <th>[% item | html_entity %]</th>
+[% SET gesamt = 0 %]
+[% FOREACH m = MONATE %]
+[% SET gesamt = gesamt + m.gesamt %]
+          <th colspan="2">[% m.datum.strftime("%m/%y") | html %] ([% m.gesamt | fix2 %])</th>
+[% END %]
+          <th colspan="2">gesamt</th>
+        </tr>
+      </thead>
+      <tbody>
+[% FOREACH n = NAMES %]
+        <tr>
+          <th>[% n.name | html %]</th>
+[%   SET summe = 0 %]
+[%   FOREACH m = MONATE %]
+[%     SET ausgaben = m.${n.id} %]
+[%     IF ausgaben %]
+[%       SET summe = summe + ausgaben %]
+          <td align="right">[% ausgaben | fix2 %]</td>
+          <td align="right">([% (10000 * ausgaben / m.gesamt) | fix2 %] %)</td> 
+[%     ELSE %]
+          <td colspan="2">&nbsp;</td>
+[%     END %]
+[%   END %]
+          <td align="right">[% summe | fix2 %]</td>
+          <td align="right">([% (10000 * summe / gesamt) | fix2 %] %)</td>
+        </tr>
+[% END %]
+      </tbody>
+    </table>
+
+  </body>
+</html>
