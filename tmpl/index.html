@@ -137,6 +137,10 @@ tr.PU { background-color:#CEF6CE }
         </thead>
 
         <tbody>
+[% UNLESS edit_id %]
+[%   PROCESS edit_buchung %]
+[% END %]
+
 [% FOREACH b = BUCHUNG %]
 [%   IF b.id == edit_id %]
 [%     PROCESS edit_buchung %]
@@ -146,11 +150,6 @@ tr.PU { background-color:#CEF6CE }
 [% END %]
         </tbody>
 
-[% UNLESS edit_id %]
-        <tfoot>
-[%   PROCESS edit_buchung %]
-        </tfoot>
-[% END %]
       </table>
     </form>
   </body>
