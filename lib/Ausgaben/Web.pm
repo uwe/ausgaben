@@ -90,7 +90,7 @@ sub process {
 
     # hole Formulardaten
     my %param = map { $_ => $req->param($_) || '' }
-        qw(id datum haendler_id kategorie_id verteilung_id ignorieren bemerkung);
+        qw(id datum haendler_id kategorie_id verteilung_id ignorieren jaehrlich bemerkung);
     my %konto = ();
     foreach my $konto (@konto) {
         my $name   = 'konto_' . $konto->id;
@@ -164,7 +164,7 @@ sub process {
                      kategorie  => $param{kategorie_id},
                      verteilung => $param{verteilung_id},
                      ignorieren => $param{ignorieren},
-                     jaehrlich  => '',
+                     jaehrlich  => $param{jaehrlich},
                      bemerkung  => $param{bemerkung},
                      konto      => \%konto,
                     );
@@ -195,6 +195,7 @@ sub process {
                   kategorie_id  => $buchung->kategorie_id,
                   verteilung_id => $buchung->verteilung_id,
                   ignorieren    => $buchung->ignorieren,
+                  jaehrlich     => $buchung->jaehrlich,
                   bemerkung     => $buchung->bemerkung,
                  );
         foreach my $betrag ($buchung->betraege) {

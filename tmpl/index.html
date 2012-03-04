@@ -21,6 +21,7 @@
             <td>[% b.kategorie.name  | html | nbsp %]</td>
             <td>[% b.verteilung.name | html | nbsp %]</td>
             <td>[% IF b.ignorieren %]X[% ELSE %]&nbsp;[% END %]</td>
+            <td>[% IF b.jaehrlich  %]X[% ELSE %]&nbsp;[% END %]</td>
             <td>[% b.bemerkung       | html | nbsp %]</td>
           </tr>
 [% END %]
@@ -69,6 +70,9 @@
             </td>
             <td>
               <input type="checkbox" name="ignorieren" value="1"[% IF DATA.ignorieren %] checked[% END %]>
+            </td>
+            <td>
+              <input type="checkbox" name="jaehrlich"  value="1"[% IF DATA.jaehrlich  %] checked[% END %]>
             </td>
             <td>
               <input type="text" name="bemerkung" value="[% DATA.bemerkung | html %]" size="20">
@@ -132,6 +136,7 @@ tr.PU { background-color:#CEF6CE }
             <th>Kategorie</th>
             <th>Vert.</th>
             <th>Ign.</th>
+            <th>Jahr</th>
             <th>Bemerkung</th>
           </tr>
         </thead>
