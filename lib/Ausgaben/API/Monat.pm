@@ -22,17 +22,61 @@ sub monat_ausgaben {
     # Ausgaben pro Monat
     my @mk = $self->rs('MonatKonto')->search({datum => $datum->ymd('-')});
     foreach (@mk) {
-        $data{ausgaben} += $_->gesamt - $_->ignoriert - int($_->jaehrlich / 12);
+        $data{ausgaben} += $_->gesamt - $_->ignoriert - $_->jaehrlich;
     }
+
+    # jaehrliche Ausgaben des letzten Jahres addieren
+    $self->schema->storage->dbh_do(
+        sub {
+            my ($storage, $dbh) = @_;
+            my $end = $datum->clone->subtract(years => 1);
+            my $sql = '
+SELECT SUM(jaehrlich)
+FROM monat_konto
+WHERE datum <= ? AND datum > ?
+';
+            my ($jaehrlich) = $dbh->selectrow_array($sql, {},
+                $datum->ymd('-'), $end->ymd('-'),
+            );
+
+            if ($jaehrlich) {
+                $data{ausgaben} += int($jaehrlich / 12);
+            }
+        },
+    );
+
 
     # Anteile pro Person
     my @mp = $self->rs('MonatPerson')->search({datum => $datum->ymd('-')});
     foreach (@mp) {
-        $data{person}{$_->person_id} += $_->gesamt - $_->ignoriert
-            - int($_->jaehrlich / 12);
-        $data{anteil}{$_->person_id} += $_->anteil_gesamt - $_->anteil_ignoriert
-            - int($_->anteil_jaehrlich / 12);
+        $data{person}{$_->person_id} += $_->gesamt
+            - $_->ignoriert
+            - $_->jaehrlich;
+        $data{anteil}{$_->person_id} += $_->anteil_gesamt
+            - $_->anteil_ignoriert
+            - $_->anteil_jaehrlich;
     }
+
+    # jaehrliche Ausgaben des letzten Jahres addieren (pro Person)
+    $self->schema->storage->dbh_do(
+        sub {
+            my ($storage, $dbh) = @_;
+            my $end = $datum->clone->subtract(years => 1);
+            my $sql = '
+SELECT person_id, SUM(jaehrlich), SUM(anteil_jaehrlich)
+FROM monat_person
+WHERE datum <= ? AND datum > ?
+GROUP BY person_id
+';
+            my $data = $dbh->selectall_arrayref($sql, {},
+                $datum->ymd('-'), $end->ymd('-'),
+            );
+            foreach (@$data) {
+                $data{person}{$_->[0]} += int($_->[1] / 12);
+                $data{anteil}{$_->[0]} += int($_->[2] / 12);
+            }
+        },
+    );
 
     return \%data;
 }
@@ -176,7 +220,6 @@ sub _add {
     $hash->{$id}{ignoriert} += $betrag if $buchung->ignorieren;
     $hash->{$id}{jaehrlich} += $betrag if $buchung->jaehrlich;
 }
-
 
 
 1;
