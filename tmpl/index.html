@@ -123,6 +123,26 @@ tr.PU { background-color:#CEF6CE }
 
     <hr>
 
+    <form action="/" method="get">
+      Haendler:
+      <select name="filter_haendler">
+        <option value="">(alle)</option>
+[% FOREACH h = HAENDLER %]
+        <option value="[% h.id | html %]"[% IF h.id == filter_haendler %] checked[% END %]>[% h.name | html %]</option>
+[% END %]
+      </select>
+
+      Kategorie:
+      <select name="filter_kategorie">
+        <option value="">(alle)</option>
+[% FOREACH k = KATEGORIE %]
+        <option value="[% k.id | html %]"[% IF k.id == filter_kategorie %] checked[% END %]>[% k.name | html %]</option>
+[% END %]
+      </select>
+
+      <input type="submit" value="filtern">
+    </form>
+
     <form action="/" method="post">
       <table border="1" cellpadding="4" cellspacing="0">
         <thead>

@@ -204,37 +204,48 @@ sub process {
         $today = $buchung->datum;
     }
 
+    my $buchung_rs;
 
-    # Buchungen laden
-    my $start      = $today->set(day => 1);
-    my $ende       = $today->clone->add(months => 1)->subtract(days => 1);
-    my $buchung_rs = $api->rs('Buchung')
-        ->search({datum    => {-between => [$start->ymd, $ende->ymd]}},
-                 {order_by => 'datum DESC, reihenfolge'},
-                );
+    # Filter?
+    my %filter = ();
+    $filter{haendler_id}  = $req->param('filter_haendler')  if $req->param('filter_haendler');
+    $filter{kategorie_id} = $req->param('filter_kategorie') if $req->param('filter_kategorie');
+    if (%filter) {
+        $buchung_rs = $api->rs('Buchung')
+            ->search(\%filter, {order_by => 'datum DESC, reihenfolge'});
+    }
+    else {
+        # Buchungen laden
+        my $start      = $today->set(day => 1);
+        my $ende       = $today->clone->add(months => 1)->subtract(days => 1);
+        $buchung_rs = $api->rs('Buchung')
+            ->search({datum    => {-between => [$start->ymd, $ende->ymd]}},
+                     {order_by => 'datum DESC, reihenfolge'},
+                    );
+    }
 
     my $kontostand = $api->konto_anfangsbestand(
-	datum => DateTime->today->set_day(1)->add(months => 1),
+        datum => DateTime->today->set_day(1)->add(months => 1),
     );
 
     my $monat_ausgaben = $api->monat_ausgaben_range(
-	von  => DateTime->today->subtract(years => 1),
-	bis  => DateTime->today,
-	skip => 1,
+        von  => DateTime->today->subtract(years => 1),
+        bis  => DateTime->today,
+        skip => 1,
     );
 
     return {
-	KONTO      => \@konto,
-	VERTEILUNG => [$api->rs('Verteilung')->all],
-	KATEGORIE  => [$api->rs('Kategorie' )->search(undef, {order_by => 'name'})->all],
-	HAENDLER   => [$api->rs('Haendler'  )->search(undef, {order_by => 'name'})->all],
-	PERSON     => [$api->rs('Person'    )->all],
-	BUCHUNG    => [$buchung_rs->all],
-	KONTOSTAND => $kontostand,
-	MONAT      => $monat_ausgaben,
-	DATA       => \%param,
-	ERROR      => \%error,
-	edit_id    => $req->param('edit') || '',
+        KONTO      => \@konto,
+        VERTEILUNG => [$api->rs('Verteilung')->all],
+        KATEGORIE  => [$api->rs('Kategorie' )->search(undef, {order_by => 'name'})->all],
+        HAENDLER   => [$api->rs('Haendler'  )->search(undef, {order_by => 'name'})->all],
+        PERSON     => [$api->rs('Person'    )->all],
+        BUCHUNG    => [$buchung_rs->all],
+        KONTOSTAND => $kontostand,
+        MONAT      => $monat_ausgaben,
+        DATA       => \%param,
+        ERROR      => \%error,
+        edit_id    => $req->param('edit') || '',
     };
 }
 
