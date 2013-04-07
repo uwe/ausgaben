@@ -9,7 +9,7 @@
 [%   END %]
           <tr class="[% UNLESS b.ignorieren %][% b.verteilung.name %][% END %]">
             <td>
-              <a href="?edit=[% b.id %]">[% b.datum.dmy('.') | html %]</a>
+              <a href="?edit=[% b.id %]">[% b.datum.strftime('%d.%m.%y') | html %]</a>
               <a href="?up=[% b.id %]">+</a>
               <a href="?down=[% b.id %]">-</a>
             </td>
