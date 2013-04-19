@@ -14,9 +14,10 @@
 [% SET gesamt = 0 %]
 [% FOREACH m = MONATE %]
 [% SET gesamt = gesamt + m.gesamt %]
-          <th colspan="2">[% m.datum.strftime("%m/%y") | html %] ([% m.gesamt | fix2 %])</th>
+          <th>[% m.datum.strftime("%m/%y") | html %]<br><font size="-1">([% m.gesamt | fix2 %])</font></th>
 [% END %]
-          <th colspan="2">gesamt</th>
+          <th>[% item | html_entity %]</th>
+          <th>gesamt</th>
         </tr>
       </thead>
       <tbody>
@@ -28,14 +29,13 @@
 [%     SET ausgaben = m.${n.id} %]
 [%     IF ausgaben %]
 [%       SET summe = summe + ausgaben %]
-          <td align="right">[% ausgaben | fix2 %]</td>
-          <td align="right">([% (10000 * ausgaben / m.gesamt) | fix2 %] %)</td> 
+          <td align="right">[% ausgaben | fix2 %]<br><font size="-1">([% (10000 * ausgaben / m.gesamt) | fix2 %] %)</font></td>
 [%     ELSE %]
-          <td colspan="2">&nbsp;</td>
+          <td>&nbsp;</td>
 [%     END %]
 [%   END %]
-          <td align="right">[% summe | fix2 %]</td>
-          <td align="right">([% (10000 * summe / gesamt) | fix2 %] %)</td>
+          <th>[% n.name | html %]</th>
+          <td align="right">[% summe | fix2 %]<br><font size="-1">([% (10000 * summe / gesamt) | fix2 %] %)</font></td>
         </tr>
 [% END %]
       </tbody>
