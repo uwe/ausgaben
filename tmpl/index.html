@@ -27,11 +27,11 @@
 [% END %]
 [% BLOCK edit_buchung %]
           <tr>
-            <td[% IF ERROR.datum %] class="error"[% END %]><input type="text" name="datum" value="[% DATA.datum | html %]" size="10"></td>
+            <td[% IF ERROR.datum %] class="error"[% END %]><input type="text" name="datum" value="[% DATA.datum | html %]" size="8"></td>
 [% FOREACH k = KONTO %]
 [%   NEXT UNLESS k.anzeigen %]
 [%   SET name = 'konto_' _ k.id %]
-            <td[% IF ERROR.konto OR ERROR.$name %] class="error"[% END %]><input type="text" name="[% name %]" value="[% DATA.$name | html %]" size="10"></td>
+            <td[% IF ERROR.konto OR ERROR.$name %] class="error"[% END %]><input type="text" name="[% name %]" value="[% DATA.$name | html %]" size="8"></td>
 [% END %]
             <td>
 [% IF DATA.haendler_name OR (DATA.haendler_id == -1) %]
