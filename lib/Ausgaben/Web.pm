@@ -286,8 +286,13 @@ sub _parse_date {
                                  month => $2,
                                  year  => $today->year,
                                 );
-        # 31.12. Anfang Januar?
-        $date->subtract(years => 1) if $date > $today;
+
+        # allow a few days in the future
+        if ($date > $today) {
+            if ($date->delta_days($today) > 5) {
+                $date->subtract(years => 1);
+            }
+        }
 
         return $date;
     }
