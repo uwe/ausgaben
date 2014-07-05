@@ -229,7 +229,7 @@ sub process {
     );
 
     my $monat_ausgaben = $api->monat_ausgaben_range(
-        von  => DateTime->today->subtract(years => 1),
+        von  => DateTime->today->subtract(years => 1, months => 1),
         bis  => DateTime->today,
         skip => 1,
     );
