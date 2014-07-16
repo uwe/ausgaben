@@ -14,7 +14,7 @@ use Ausgaben::API;
 use Ausgaben::Schema;
 
 
-my $schema = Ausgaben::Schema->connect('dbi:mysql:ausgaben', 'root', 'root');
+my $schema = Ausgaben::Schema->connect('dbi:mysql:ausgaben:mysql', 'ausgaben', 'ausgaben');
 my $api    = Ausgaben::API->new(schema => $schema);
 my $tt2    = Template->new({INCLUDE_PATH => 'tmpl'});
 

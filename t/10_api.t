@@ -12,7 +12,7 @@ use_ok('Ausgaben::Schema');
 use_ok('Ausgaben::API');
 
 
-my $api = _init_api('dbi:mysql:ausgaben_test', 'root', 'root');
+my $api = _init_api('dbi:mysql:ausgaben_test:mysql', 'ausgaben', 'ausgaben');
 
 # Personen anlegen
 $api->person_neu(name => 'Uwe');
