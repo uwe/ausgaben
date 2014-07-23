@@ -8,4 +8,4 @@ WORKDIR /app
 RUN cpanm --notest --installdeps .
 RUN cpanm --notest Starman
 
-CMD starman --preload-app --port 5000
+CMD plackup

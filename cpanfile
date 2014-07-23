@@ -8,3 +8,4 @@ requires 'DBD::mysql';
 requires 'DBI';
 requires 'Template::Plugin::Nbsp';
 requires 'DateTime::Format::MySQL';
+requires 'HTML::Entities';
