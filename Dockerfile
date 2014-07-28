@@ -9,6 +9,5 @@ RUN cpanm --notest --installdeps .
 RUN cpanm --notest Starman
 
 ADD . /home/app
-RUN mv /home/app/id_rsa.pub /root/.ssh/authorized_keys
 
 CMD plackup
