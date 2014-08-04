@@ -210,6 +210,8 @@ sub process {
     my %filter = ();
     $filter{haendler_id}  = $req->param('filter_haendler')  if $req->param('filter_haendler');
     $filter{kategorie_id} = $req->param('filter_kategorie') if $req->param('filter_kategorie');
+    $filter{ignorieren}   = 1                               if $req->param('filter_ignorieren');
+    $filter{jaehrlich}    = 1                               if $req->param('filter_jaehrlich');
     if (%filter) {
         $buchung_rs = $api->rs('Buchung')
             ->search(\%filter, {order_by => 'datum DESC, reihenfolge'});

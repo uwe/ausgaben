@@ -132,6 +132,8 @@ tr.PU { background-color:#CEF6CE }
 [% END %]
       </select>
 
+      &nbsp;&nbsp;
+
       Kategorie:
       <select name="filter_kategorie">
         <option value="">(alle)</option>
@@ -139,6 +141,18 @@ tr.PU { background-color:#CEF6CE }
         <option value="[% k.id | html %]"[% IF k.id == filter_kategorie %] checked[% END %]>[% k.name | html %]</option>
 [% END %]
       </select>
+
+      &nbsp;&nbsp;
+
+      Ignorieren:
+      <input type="checkbox" name="filter_ignorieren" value="1"[% IF filter_ignorieren %] checked[% END %] />
+
+      &nbsp;&nbsp;
+
+      J&auml;hrlich:
+      <input type="checkbox" name="filter_jaehrlich" value="1"[% IF filter_jaehrlich %] checked[% END %] />
+
+      &nbsp;&nbsp;
 
       <input type="submit" value="filtern">
     </form>
