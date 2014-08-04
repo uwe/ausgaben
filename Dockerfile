@@ -6,7 +6,6 @@ RUN curl -L http://cpanmin.us | perl - App::cpanminus
 WORKDIR /home/app
 ADD cpanfile /home/app/
 RUN cpanm --notest --installdeps .
-RUN cpanm --notest Starman
 
 ADD . /home/app
 
