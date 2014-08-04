@@ -67,6 +67,14 @@ sub process_report {
     # sortiere Monate
     @monat = sort { $a->{datum} <=> $b->{datum} } @monat;
 
+    # recalculate months
+    ###TODO### find proper place
+    if ($req->param('calc')) {
+        foreach my $monat (sort keys %monat) {
+            $api->monat_berechne(datum => $monat);
+        }
+    }
+
     my $kat_rs = $api->rs($name)->search({}, {order_by => 'name'});
 
     return {item   => $name,
@@ -218,8 +226,8 @@ sub process {
     }
     else {
         # Buchungen laden
-        my $start      = $today->set(day => 1);
-        my $ende       = $today->clone->add(months => 1)->subtract(days => 1);
+        my $start   = $today->set(day => 1);
+        my $ende    = $today->clone->add(months => 1)->subtract(days => 1);
         $buchung_rs = $api->rs('Buchung')
             ->search({datum    => {-between => [$start->ymd, $ende->ymd]}},
                      {order_by => 'datum DESC, reihenfolge'},
