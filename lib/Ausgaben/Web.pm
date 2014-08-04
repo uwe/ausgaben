@@ -1,6 +1,5 @@
 package Ausgaben::Web;
 
-###TODO### Monat als Parameter (oder in URL)
 ###TODO### MonatKategorie statt kategorie_id nur id? Besser fuer process_report()
 
 use strict;

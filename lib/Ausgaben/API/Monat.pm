@@ -40,7 +40,8 @@ WHERE datum <= ? AND datum > ?
             );
 
             if ($jaehrlich) {
-                $data{ausgaben} += int($jaehrlich / 12);
+                $data{ausgaben}  += int($jaehrlich / 12);
+                $data{jaehrlich} += int($jaehrlich / 12);
             }
         },
     );

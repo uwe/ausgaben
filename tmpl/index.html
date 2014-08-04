@@ -107,7 +107,7 @@ tr.PU { background-color:#CEF6CE }
         <tr>
           <th>Ausgaben</th>
 [% FOREACH m = MONAT %]
-          <td>[% m.ausgaben | fix2 %]</td>
+          <td>[% m.ausgaben | fix2 %] ([% m.jaehrlich | fix2 %])</td>
 [% END %]
         </tr>
 [% FOREACH p = PERSON %]
