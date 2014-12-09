@@ -74,6 +74,22 @@ sub process_report {
         }
     }
 
+    # yearly view
+    if ($req->param('year')) {
+        my %year = ();
+        foreach my $monat (@monat) {
+            my $datum = delete $monat->{datum};
+            my $year  = $datum->year;
+            $year{$year}{datum} ||= DateTime->new(year => $year, month => 1, day => 1);
+            while (my ($id, $ausgaben) = each %$monat) {
+                $year{$year}{$id} += $ausgaben;
+            }
+        }
+
+        # write back to monthly data set (re-use monthly template)
+        @monat = sort { $a->{datum} <=> $b->{datum} } values %year
+    }
+
     my $kat_rs = $api->rs($name)->search({}, {order_by => 'name'});
 
     return {item   => $name,
