@@ -14,7 +14,7 @@
               <a href="?down=[% b.id %]">-</a>
             </td>
 [%   FOREACH k = KONTO %]
-[%     NEXT UNLESS k.anzeigen %]
+[%     NEXT UNLESS k.anzeigen OR edit_id %]
             <td align="right">[% IF betrag.${k.id} %][% betrag.${k.id} | fix2 %][% ELSE %]&nbsp;[% END %]</td>
 [%   END %]
             <td>[% b.haendler.name   | html | nbsp %]</td>
@@ -29,7 +29,7 @@
           <tr>
             <td[% IF ERROR.datum %] class="error"[% END %]><input type="text" name="datum" value="[% DATA.datum | html %]" size="8"></td>
 [% FOREACH k = KONTO %]
-[%   NEXT UNLESS k.anzeigen %]
+[%   NEXT UNLESS k.anzeigen OR edit_id %]
 [%   SET name = 'konto_' _ k.id %]
             <td[% IF ERROR.konto OR ERROR.$name %] class="error"[% END %]><input type="text" name="[% name %]" value="[% DATA.$name | html %]" size="8"></td>
 [% END %]
@@ -165,7 +165,7 @@ tr.PU { background-color:#CEF6CE }
           <tr>
             <th>Datum</th>
 [% FOREACH k = KONTO %]
-[%   NEXT UNLESS k.anzeigen %]
+[%   NEXT UNLESS k.anzeigen OR edit_id %]
             <th>[% k.name | html %]<br>[% KONTOSTAND.${k.id} | fix2 %]</th>
 [% END %]
             <th>H&auml;ndler</th>
