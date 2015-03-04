@@ -155,6 +155,16 @@ tr.PU { background-color:#CEF6CE }
       &nbsp;&nbsp;
 
       <input type="submit" value="filtern">
+
+      &nbsp;&nbsp;
+
+[% running_year = 0 %]
+[% FOREACH m = MONAT %]
+[%   NEXT IF loop.first %]
+[%   NEXT IF loop.last %]
+[%   running_year += m.ausgaben %]
+[% END %]
+      running year: [% running_year | fix2 %]
     </form>
 
     <hr>
