@@ -162,7 +162,7 @@ tr.PU { background-color:#CEF6CE }
 [% FOREACH m = MONAT %]
 [%   NEXT IF loop.first %]
 [%   NEXT IF loop.last %]
-[%   running_year += m.ausgaben %]
+[%   running_year = running_year + m.ausgaben %]
 [% END %]
       running year: [% running_year | fix2 %]
     </form>
